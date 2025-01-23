@@ -4,8 +4,8 @@ const nextConfig = {
     images: {
         unoptimized: true,
     },
+    distDir: 'dist',
     basePath: '/trailer-calculator',
-    trailingSlash: true,
 }
 
 module.exports = nextConfig

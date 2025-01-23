@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { AlertCircle } from 'lucide-react';
-import { Alert, AlertDescription } from "@/app/components/ui/Alert";
+"use client";
+
+import React, {useEffect, useState} from 'react';
+import {AlertCircle} from 'lucide-react';
+import {Alert, AlertDescription} from "@/app/components/ui/Alert";
 
 interface InputGroupProps {
     label: string;
