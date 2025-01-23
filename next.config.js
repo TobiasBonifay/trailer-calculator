@@ -4,8 +4,18 @@ const nextConfig = {
     images: {
         unoptimized: true,
     },
-    assetPrefix: '/trailer-calculator',
     basePath: '/trailer-calculator',
-    distDir: 'dist',
+    assetPrefix: '/trailer-calculator/',
     trailingSlash: true,
+    // This is important to ensure files are served from the correct path
+    experimental: {
+        optimizeCss: true,
+    },
+    webpack: (config, {isServer}) => {
+        // Handle any specific webpack configuration if needed
+        return config;
+    },
+    compiler: {
+        removeConsole: process.env.NODE_ENV === 'production',
+    },
 }
