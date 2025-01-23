@@ -8,8 +8,7 @@
     "build": "next build",
     "start": "npx serve dist",
     "lint": "next lint",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages --dist dist --dotfiles true"
   },
   "dependencies": {
     "lucide-react": "^0.473.0",
