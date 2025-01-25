@@ -68,6 +68,11 @@
         .w3-tooltip:hover .w3-text {
             visibility: visible;
         }
+
+        .highlight-license {
+            background: #fff9c4 !important;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body class="w3-theme-light">
@@ -96,11 +101,15 @@
                         <label class="w3-radio">
                             <input checked name="inputMode" onclick="toggleInputMode('quantity')" type="radio"
                                    value="quantity">
-                            <span class="tooltip">Quantity Mode</span>
+                            <span class="w3-tooltip">Quantity Mode
+                                <span class="w3-text w3-tag">Calculate using average weights</span>
+                            </span>
                         </label>
                         <label class="w3-radio">
                             <input name="inputMode" onclick="toggleInputMode('weight')" type="radio" value="weight">
-                            <span class="tooltip">Weight Mode</span>
+                            <span class="w3-tooltip">Weight Mode
+                                <span class="w3-text w3-tag">Enter exact weights manually</span>
+                            </span>
                         </label>
                     </div>
 
@@ -206,25 +215,25 @@
                 <th>Combined GVWR</th>
                 <th>Required License</th>
             </tr>
-            <tr>
+            <tr id="license-B">
                 <td>≤ 750kg</td>
                 <td>Any</td>
                 <td>B</td>
             </tr>
-            <tr>
+            <tr id="license-B-group">
                 <td rowspan="3">750kg - 3500kg</td>
                 <td>≤ 3500kg</td>
-                <td>B</td>
+                <td id="license-B-inner">B</td>
             </tr>
-            <tr>
+            <tr id="license-B96">
                 <td>3500kg - 4250kg</td>
                 <td>B96</td>
             </tr>
-            <tr>
+            <tr id="license-BE">
                 <td>> 4250kg</td>
                 <td>BE</td>
             </tr>
-            <tr class="w3-pale-red">
+            <tr class="w3-pale-red" id="license-C1E">
                 <td>> 3500kg</td>
                 <td>Any</td>
                 <td>C1E</td>
@@ -300,6 +309,19 @@
             <h3><i class="fas fa-id-card-alt"></i> Required License: ${license}</h3>
         </div>
     `;
+
+        // Highlight license row
+        document.querySelectorAll('#license-B, #license-B96, #license-BE, #license-C1E').forEach(row => {
+            row.classList.remove('highlight-license');
+        });
+
+        if (license === 'C1E') document.getElementById('license-C1E').classList.add('highlight-license');
+        else if (license === 'BE') document.getElementById('license-BE').classList.add('highlight-license');
+        else if (license === 'B96') document.getElementById('license-B96').classList.add('highlight-license');
+        else {
+            if (f2t <= 750) document.getElementById('license-B').classList.add('highlight-license');
+            else document.getElementById('license-B-inner').closest('tr').classList.add('highlight-license');
+        }
     }
 </script>
 </body>
