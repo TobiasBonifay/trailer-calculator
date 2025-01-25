@@ -85,6 +85,33 @@
         .active-mode {
             display: table-row;
         }
+
+        .country-group {
+            border: 1px solid #ddd;
+            margin: 10px 0;
+            padding: 10px;
+        }
+
+        .regulation-category {
+            margin: 15px 0;
+            padding: 10px;
+            background: #f8f9fa;
+        }
+
+        .regulation-list {
+            list-style-type: none;
+            padding-left: 20px;
+        }
+
+        .country-checkbox {
+            margin: 5px 10px;
+        }
+
+        .climate-zone {
+            border-left: 4px solid #4CAF50;
+            padding: 5px 10px;
+            margin: 5px 0;
+        }
     </style>
 </head>
 <body class="w3-theme-light">
@@ -104,6 +131,44 @@
 
 <main class="w3-container">
     <div class="calculator-card">
+        <h2 class="w3-text-theme"><i class="fas fa-flag"></i> Country-Specific Regulations</h2>
+
+        <div class="w3-panel w3-pale-blue">
+            <h4>Select Countries to Travel Through:</h4>
+            <div class="country-group">
+                <h5>Western Europe</h5>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="france"> France</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="germany"> Germany</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="netherlands"> Netherlands</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="belgium"> Belgium</label>
+            </div>
+
+            <div class="country-group">
+                <h5>Southern Europe</h5>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="italy"> Italy</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="spain"> Spain</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="portugal">
+                    Portugal</label>
+            </div>
+
+            <div class="country-group">
+                <h5>Alpine Region</h5>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="switzerland"> Switzerland</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="austria"> Austria</label>
+            </div>
+
+            <div class="country-group">
+                <h5>Nordic Countries</h5>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="denmark"> Denmark</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="sweden"> Sweden</label>
+            </div>
+        </div>
+
+        <div class="w3-hide" id="countryRegulations">
+            <h4>Selected Country Regulations:</h4>
+            <div id="regulationDetails"></div>
+        </div>
+
         <h2 class="w3-text-theme"><i class="fas fa-calculator"></i> Vehicle Specifications</h2>
         <div class="w3-row-padding">
             <div class="w3-twothird">
@@ -297,6 +362,229 @@
 </footer>
 
 <script>
+    const countryRegulations = {
+        france: {
+            speed: "60-80 km/h (national roads/highways)",
+            breaks: "Mandatory breaks if journey >8h",
+            temperature: "No explicit limit (common sense rule applies)",
+            inspection: "6 months (commercial), 2 years (private)",
+            equipment: "Breast bars, secured shackles",
+            weight: "1.3 weight ratio rule",
+            documents: "CAPTAV required for commercial >65km",
+            training: "CAPTAV certification required (commercial)",
+            restrictions: "No specific restrictions",
+            surveillance: "Recommended GPS for >8h journeys"
+        },
+        germany: {
+            speed: "60 km/h (national), 80 km/h (autobahn)",
+            breaks: "Every 4.5 hours",
+            temperature: ">30°C prohibited without AC",
+            inspection: "Annual TÜV inspection",
+            equipment: "Double axles >2000kg, active ventilation",
+            weight: "Strict axle weight regulations",
+            documents: "Transportzulassung (commercial)",
+            training: "Commercial transport certification",
+            restrictions: "No transport on certain holidays",
+            surveillance: "GPS mandatory for commercial"
+        },
+        netherlands: {
+            speed: "80 km/h maximum",
+            breaks: "Every 4 hours",
+            temperature: ">35°C prohibited",
+            inspection: "Annual APK inspection",
+            equipment: "Double axles >1750kg, surveillance cameras",
+            weight: "No specific ratio",
+            documents: "Vervoersdocument required",
+            training: "None for private transport",
+            restrictions: "Night transport allowed",
+            surveillance: "Cameras mandatory"
+        },
+        belgium: {
+            speed: "90 km/h (highways)",
+            breaks: "Every 6 hours",
+            temperature: "No official limit",
+            inspection: "Biennial inspection",
+            equipment: "Standard safety equipment",
+            weight: "No specific ratio",
+            documents: "Basic transport documents",
+            training: "None required",
+            restrictions: "Night transport allowed",
+            surveillance: "Recommended"
+        },
+        switzerland: {
+            speed: "80 km/h maximum",
+            breaks: "30min every 4 hours",
+            temperature: ">30°C prohibited",
+            inspection: "Annual inspection",
+            equipment: "Dual-circuit brakes, certified insulation",
+            weight: "Strict per-axle weight rules",
+            documents: "Cantonal authorization",
+            training: "Mandatory transport certification",
+            restrictions: "No night/Sunday transport",
+            surveillance: "Recommended"
+        },
+        italy: {
+            speed: "70 km/h (roads), 80 km/h (highways)",
+            breaks: "Every 3.5 hours",
+            temperature: "AC required >25°C",
+            inspection: "Semi-annual (commercial)",
+            equipment: "AC, double axles, surveillance cameras",
+            weight: "No specific ratio",
+            documents: "Type 1 authorization",
+            training: "Basic safety certification",
+            restrictions: "Summer weekend restrictions",
+            surveillance: "GPS mandatory"
+        },
+        austria: {
+            speed: "70 km/h (roads), 80 km/h (highways)",
+            breaks: "45min every 4.5h",
+            temperature: ">32°C prohibited",
+            inspection: "Annual (§ 57a)",
+            equipment: "Mountain lighting, snow chains in winter",
+            weight: "No specific ratio",
+            documents: "Tiertransportbescheinigung",
+            training: "Mountain zone certification",
+            restrictions: "Night transport prohibited",
+            surveillance: "Recommended"
+        },
+        spain: {
+            speed: "80 km/h maximum",
+            breaks: "45min every 4h",
+            temperature: ">35°C prohibited",
+            inspection: "Annual ITV",
+            equipment: "AC, 30L water tank",
+            weight: "No specific ratio",
+            documents: "Autonomous community authorization",
+            training: "Heat management certification",
+            restrictions: "12pm-5pm summer restrictions",
+            surveillance: "Recommended"
+        },
+        portugal: {
+            speed: "70 km/h (roads), 80 km/h (highways)",
+            breaks: "30min every 3h",
+            temperature: ">32°C prohibited",
+            inspection: "Biennial",
+            equipment: "Sun protection",
+            weight: "No specific ratio",
+            documents: "Basic transport documents",
+            training: "None required",
+            restrictions: "No specific restrictions",
+            surveillance: "Optional"
+        },
+        denmark: {
+            speed: "80 km/h maximum",
+            breaks: "45min every 4.5h",
+            temperature: ">29°C prohibited",
+            inspection: "Biennial",
+            equipment: "Winter tires, heating system",
+            weight: "No specific ratio",
+            documents: "Basic transport documents",
+            training: "Winter certification",
+            restrictions: "No specific restrictions",
+            surveillance: "Electronic monitoring required"
+        },
+        sweden: {
+            speed: "80 km/h maximum",
+            breaks: "45min every 4.5h",
+            temperature: "<-20°C prohibited",
+            inspection: "Annual",
+            equipment: "Reinforced insulation, heating",
+            weight: "No specific ratio",
+            documents: "Winter transport permit",
+            training: "Arctic conditions certification",
+            restrictions: "Winter-only routes",
+            surveillance: "Mandatory tracking"
+        }
+    };
+
+    // Climate zone requirements (separate object)
+    const climateZones = {
+        mediterranean: {
+            countries: ['italy', 'spain', 'portugal'],
+            requirements: [
+                "Sun protection equipment",
+                "Air conditioning system",
+                "30L minimum water tank",
+                "Heat-resistant flooring"
+            ]
+        },
+        alpine: {
+            countries: ['switzerland', 'austria'],
+            requirements: [
+                "Snow chains (winter)",
+                "Mountain-grade brakes",
+                "Special lighting equipment",
+                "Altitude compensation system"
+            ]
+        },
+        nordic: {
+            countries: ['denmark', 'sweden'],
+            requirements: [
+                "Certified thermal insulation",
+                "Heating system (-20°C capability)",
+                "Winter tires (November-April)",
+                "Enhanced lighting system"
+            ]
+        }
+    };
+
+    function showCountryRegulations() {
+        const selected = Array.from(document.querySelectorAll('input[name="countries"]:checked'))
+            .map(c => c.value);
+        let html = '';
+
+        selected.forEach(country => {
+            const rules = countryRegulations[country];
+            html += `
+        <div class="regulation-category">
+            <h5>${country.toUpperCase()} Regulations</h5>
+            <ul class="regulation-list">
+                ${Object.entries(rules).map(([key, val]) => `
+                <li><strong>${key.toUpperCase()}:</strong> ${val}</li>
+                `).join('')}
+            </ul>
+        </div>`;
+        });
+
+        if (selected.length > 0) {
+            document.getElementById('countryRegulations').classList.remove('w3-hide');
+            document.getElementById('regulationDetails').innerHTML = html;
+
+            // Add climate zone warnings
+            const climateNotes = getClimateZoneRequirements(selected);
+            if (climateNotes) {
+                document.getElementById('regulationDetails').innerHTML += `
+            <div class="climate-zone">
+                <h5>Climate Zone Requirements</h5>
+                ${climateNotes}
+            </div>`;
+            }
+        }
+    }
+
+    function getClimateZoneRequirements(selectedCountries) {
+        const zones = {
+            mediterranean: ['italy', 'spain', 'portugal'],
+            alpine: ['switzerland', 'austria'],
+            nordic: ['denmark', 'sweden']
+        };
+
+        const required = [];
+        if (selectedCountries.some(c => zones.mediterranean.includes(c))) {
+            required.push("Mediterranean Zone: Sun protection, AC, 30L water tank");
+        }
+        if (selectedCountries.some(c => zones.alpine.includes(c))) {
+            required.push("Alpine Zone: Snow chains, reinforced brakes");
+        }
+        if (selectedCountries.some(c => zones.nordic.includes(c))) {
+            required.push("Nordic Zone: Thermal insulation, winter tires");
+        }
+
+        return required.length > 0 ?
+            `<ul>${required.map(r => `<li>${r}</li>`).join('')}</ul>` :
+            '';
+    }
+
     function toggleInputMode(mode) {
         document.querySelectorAll('.active-mode, .weight-mode').forEach(e => e.style.display = 'none');
         mode === 'quantity'
@@ -390,6 +678,8 @@
             if (f2t <= 750) document.getElementById('license-B').classList.add('highlight-license');
             else document.getElementById('license-B-inner').closest('tr').classList.add('highlight-license');
         }
+
+        showCountryRegulations();
     }
 </script>
 </body>
