@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Horse Trailer Towing Calculator</title>
-    <meta content="Professional horse trailer towing capacity calculator with regulatory checks" name="description">
+    <title>Horse Trailer Calculator</title>
+    <meta content="Professional horse trailer towing calculator with dual input modes" name="description">
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <link href="https://www.w3schools.com/w3css/4/w3.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -27,23 +27,51 @@
             margin: 2rem 0;
         }
 
-        .input-group {
-            margin: 1.5rem 0;
-        }
-
-        .warning {
-            border-left: 4px solid var(--warning) !important;
-        }
-
-        .result-card {
-            padding: 1.5rem;
+        .input-mode {
             margin: 1rem 0;
+            padding: 1rem;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+
+        .tooltip {
+            cursor: help;
+            border-bottom: 1px dotted var(--primary);
+        }
+
+        .weight-mode {
+            display: none;
+        }
+
+        .active-mode {
+            display: table-row;
+        }
+
+        .w3-tooltip {
+            position: relative;
+        }
+
+        .w3-tooltip .w3-text {
+            visibility: hidden;
+            width: 200px;
+            background: var(--primary);
+            color: white;
+            padding: 5px;
+            border-radius: 4px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+        }
+
+        .w3-tooltip:hover .w3-text {
+            visibility: visible;
         }
     </style>
 </head>
 <body class="w3-theme-light">
 
-<!-- Navbar -->
 <div class="w3-top">
     <div class="w3-bar w3-card" style="background: var(--primary)">
         <a class="w3-bar-item w3-button w3-large" href="#">
@@ -52,39 +80,53 @@
     </div>
 </div>
 
-<!-- Hero Section -->
 <header class="hero w3-center">
     <h1 class="w3-xxxlarge">Horse Trailer Safety Calculator</h1>
-    <p class="w3-large">Ensure safe and legal transport of your horses</p>
+    <p class="w3-large">Dual input mode: Quantity or Exact Weights</p>
 </header>
 
 <main class="w3-container">
-    <!-- Calculator Form -->
     <div class="calculator-card">
         <h2 class="w3-text-theme"><i class="fas fa-calculator"></i> Vehicle Specifications</h2>
 
         <div class="w3-row-padding">
             <div class="w3-twothird">
                 <form id="calcForm">
-                    <h4 class="w3-text-theme">Technical Details (kg)</h4>
+                    <div class="input-mode w3-center">
+                        <label class="w3-radio">
+                            <input checked name="inputMode" onclick="toggleInputMode('quantity')" type="radio"
+                                   value="quantity">
+                            <span class="tooltip">Quantity Mode</span>
+                        </label>
+                        <label class="w3-radio">
+                            <input name="inputMode" onclick="toggleInputMode('weight')" type="radio" value="weight">
+                            <span class="tooltip">Weight Mode</span>
+                        </label>
+                    </div>
+
                     <table class="w3-table w3-bordered">
                         <tr>
                             <th></th>
-                            <th>Towing Vehicle</th>
-                            <th>Trailer</th>
+                            <th><span class="w3-tooltip">Towing Vehicle<span class="w3-text">The vehicle pulling the trailer</span></span>
+                            </th>
+                            <th><span class="w3-tooltip">Trailer<span
+                                    class="w3-text">Horse transport unit being towed</span></span></th>
                         </tr>
                         <tr>
-                            <td>Unladen Weight (G1)</td>
+                            <td><span class="w3-tooltip">Unladen Weight (G1)<span class="w3-text">Empty weight from documents</span></span>
+                            </td>
                             <td><input class="w3-input" id="g1Vehicle" required type="number"></td>
                             <td><input class="w3-input" id="g1Trailer" required type="number"></td>
                         </tr>
                         <tr>
-                            <td>GVWR (F2)</td>
+                            <td><span class="w3-tooltip">GVWR (F2)<span
+                                    class="w3-text">Max authorized loaded weight</span></span></td>
                             <td><input class="w3-input" id="f2Vehicle" required type="number"></td>
                             <td><input class="w3-input" id="f2Trailer" required type="number"></td>
                         </tr>
                         <tr>
-                            <td>GTW (F3)</td>
+                            <td><span class="w3-tooltip">GTW (F3)<span class="w3-text">Combined max weight (vehicle + trailer)</span></span>
+                            </td>
                             <td><input class="w3-input" id="f3Vehicle" required type="number"></td>
                             <td><input class="w3-input" disabled id="f3Trailer" type="number"></td>
                         </tr>
@@ -92,23 +134,35 @@
 
                     <h4 class="w3-text-theme" style="margin-top:32px">Load Details</h4>
                     <table class="w3-table w3-bordered">
-                        <tr>
-                            <th></th>
-                            <th>Towing Vehicle</th>
-                            <th>Trailer</th>
+                        <tr class="active-mode" id="quantityHuman">
+                            <td><span class="w3-tooltip">Human Passengers<span class="w3-text">Number of people (avg 75kg each)</span></span>
+                            </td>
+                            <td><input class="w3-input" id="qHumansVehicle" type="number" value="0"></td>
+                            <td><input class="w3-input" id="qHumansTrailer" type="number" value="0"></td>
                         </tr>
-                        <tr>
-                            <td>Human Passengers</td>
-                            <td><input class="w3-input" id="humansVehicle" type="number" value="0"></td>
-                            <td><input class="w3-input" id="humansTrailer" type="number" value="0"></td>
+                        <tr class="active-mode" id="quantityHorse">
+                            <td><span class="w3-tooltip">Horses<span class="w3-text">Number of horses (avg 500kg each +25% safety)</span></span>
+                            </td>
+                            <td><input class="w3-input" disabled type="number" value="0"></td>
+                            <td><input class="w3-input" id="qHorsesTrailer" type="number" value="0"></td>
                         </tr>
-                        <tr>
-                            <td>Horses</td>
-                            <td><input class="w3-input" disabled id="horsesVehicle" type="number" value="0"></td>
-                            <td><input class="w3-input" id="horsesTrailer" type="number" value="0"></td>
+
+                        <tr class="weight-mode" id="weightHuman">
+                            <td><span class="w3-tooltip">Human Weight (kg)<span class="w3-text">Total weight of all passengers</span></span>
+                            </td>
+                            <td><input class="w3-input" id="wHumansVehicle" type="number" value="0"></td>
+                            <td><input class="w3-input" id="wHumansTrailer" type="number" value="0"></td>
                         </tr>
+                        <tr class="weight-mode" id="weightHorse">
+                            <td><span class="w3-tooltip">Horse Weight (kg)<span class="w3-text">Total weight including safety margin</span></span>
+                            </td>
+                            <td><input class="w3-input" disabled type="number" value="0"></td>
+                            <td><input class="w3-input" id="wHorsesTrailer" type="number" value="0"></td>
+                        </tr>
+
                         <tr>
-                            <td>Equipment Weight</td>
+                            <td><span class="w3-tooltip">Equipment (kg)<span
+                                    class="w3-text">Tack, feed, and other cargo</span></span></td>
                             <td><input class="w3-input" id="equipVehicle" type="number" value="0"></td>
                             <td><input class="w3-input" id="equipTrailer" type="number" value="0"></td>
                         </tr>
@@ -123,25 +177,27 @@
 
             <div class="w3-third">
                 <div class="w3-panel w3-pale-green w3-leftbar w3-border-green">
-                    <h4><i class="fas fa-info-circle"></i> Calculation Standards</h4>
+                    <h4><i class="fas fa-info-circle"></i> Calculation Notes</h4>
                     <ul class="w3-ul">
-                        <li>Average human weight: 75kg</li>
-                        <li>Average horse weight: 500kg</li>
-                        <li>25% safety margin for animals</li>
-                        <li>GTW = Gross Train Weight (F3)</li>
+                        <li>Quantity Mode uses averages:
+                            <ul>
+                                <li>Human: 75kg/person</li>
+                                <li>Horse: 500kg + 25% safety</li>
+                            </ul>
+                        </li>
+                        <li>Weight Mode uses exact inputs</li>
+                        <li>All values in kilograms (kg)</li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Results Section -->
     <div class="calculator-card" id="results">
         <h2 class="w3-text-theme"><i class="fas fa-clipboard-check"></i> Results</h2>
         <div id="resultContent"></div>
     </div>
 
-    <!-- License Requirements -->
     <div class="calculator-card">
         <h2 class="w3-text-theme"><i class="fas fa-id-card"></i> License Requirements</h2>
         <table class="w3-table w3-bordered w3-striped">
@@ -178,42 +234,41 @@
 </main>
 
 <footer class="w3-container w3-theme-d3 w3-center w3-padding-32">
-    <p class="w3-small">Important: This tool provides estimates only. Always verify with:<br>
-        - Vehicle manufacturer specifications<br>
-        - Actual weighbridge measurements<br>
-        - Local transport regulations</p>
+    <p class="w3-small">Important: Verify with official specifications and regulations</p>
 </footer>
 
 <script>
+    function toggleInputMode(mode) {
+        document.querySelectorAll('.active-mode, .weight-mode').forEach(e => e.style.display = 'none');
+        mode === 'quantity'
+            ? document.querySelectorAll('.active-mode').forEach(e => e.style.display = 'table-row')
+            : document.querySelectorAll('.weight-mode').forEach(e => e.style.display = 'table-row');
+    }
+
     function calculate() {
-        // Constants
-        const HUMAN_WEIGHT = 75;
-        const HORSE_WEIGHT = 500;
-        const SAFETY_FACTOR = 1.25;
+        const g1v = +document.getElementById('g1Vehicle').value || 0;
+        const f2v = +document.getElementById('f2Vehicle').value || 0;
+        const f3v = +document.getElementById('f3Vehicle').value || 0;
+        const g1t = +document.getElementById('g1Trailer').value || 0;
+        const f2t = +document.getElementById('f2Trailer').value || 0;
+        const equipV = +document.getElementById('equipVehicle').value || 0;
+        const equipT = +document.getElementById('equipTrailer').value || 0;
 
-        // Get inputs
-        const g1v = parseInt(document.getElementById('g1Vehicle').value) || 0;
-        const f2v = parseInt(document.getElementById('f2Vehicle').value) || 0;
-        const f3v = parseInt(document.getElementById('f3Vehicle').value) || 0;
-        const g1t = parseInt(document.getElementById('g1Trailer').value) || 0;
-        const f2t = parseInt(document.getElementById('f2Trailer').value) || 0;
+        const isQuantityMode = document.querySelector('input[name="inputMode"]:checked').value === 'quantity';
+        let humansV, humansT, horsesT;
 
-        // Load calculations
-        const humansV = parseInt(document.getElementById('humansVehicle').value) || 0;
-        const humansT = parseInt(document.getElementById('humansTrailer').value) || 0;
-        const horsesT = parseInt(document.getElementById('horsesTrailer').value) || 0;
-        const equipV = parseInt(document.getElementById('equipVehicle').value) || 0;
-        const equipT = parseInt(document.getElementById('equipTrailer').value) || 0;
+        if (isQuantityMode) {
+            humansV = (+document.getElementById('qHumansVehicle').value || 0) * 75;
+            humansT = (+document.getElementById('qHumansTrailer').value || 0) * 75;
+            horsesT = (+document.getElementById('qHorsesTrailer').value || 0) * 500 * 1.25;
+        } else {
+            humansV = +document.getElementById('wHumansVehicle').value || 0;
+            humansT = +document.getElementById('wHumansTrailer').value || 0;
+            horsesT = +document.getElementById('wHorsesTrailer').value || 0;
+        }
 
-        // Weight calculations
-        const totalHuman = (humansV + humansT) * HUMAN_WEIGHT;
-        const totalHorses = horsesT * HORSE_WEIGHT * SAFETY_FACTOR;
-        const totalEquip = equipV + equipT;
-        const totalLoad = totalHuman + totalHorses + totalEquip;
-
-        // Vehicle weights
-        const actualVehicle = g1v + equipV + (humansV * HUMAN_WEIGHT);
-        const actualTrailer = g1t + equipT + (humansT * HUMAN_WEIGHT) + (horsesT * HORSE_WEIGHT);
+        const actualVehicle = g1v + equipV + humansV;
+        const actualTrailer = g1t + equipT + humansT + horsesT;
         const combinedWeight = actualVehicle + actualTrailer;
 
         // Regulatory checks
@@ -233,49 +288,19 @@
             else if (totalGVWR > 3500) license = "B96";
         }
 
-        // Build results
-        let resultHTML = `
-        <div class="result-card ${checks.gtw ? 'w3-pale-green' : 'w3-pale-red warning'}">
+        document.getElementById('resultContent').innerHTML = `
+        <div class="w3-panel ${checks.gtw ? 'w3-pale-green' : 'w3-pale-red'}">
             <h3><i class="fas fa-balance-scale-right"></i> Weight Summary</h3>
-            <ul>
-                <li>Total Load: ${totalLoad.toFixed(0)}kg</li>
-                <li>Combined Weight: ${combinedWeight.toFixed(0)}kg / ${f3v}kg (GTW)</li>
-                <li>Trailer/Vechicle Ratio: ${(actualTrailer / actualVehicle).toFixed(2)} (Max 1.3)</li>
-            </ul>
+            <p>Vehicle: ${actualVehicle.toFixed(0)}kg/${f2v}kg (${checks.vehicleGVWR ? '✅' : '❌'})</p>
+            <p>Trailer: ${actualTrailer.toFixed(0)}kg/${f2t}kg (${checks.trailerGVWR ? '✅' : '❌'})</p>
+            <p>Combined: ${combinedWeight.toFixed(0)}kg/${f3v}kg (${checks.gtw ? '✅' : '❌'})</p>
+            <p>Weight Ratio: ${(actualTrailer / actualVehicle).toFixed(2)} (${checks.ratio ? '✅ ≤1.3' : '❌ >1.3'})</p>
         </div>
-
-        <div class="result-card ${license === 'C1E' ? 'w3-pale-red warning' : 'w3-pale-blue'}">
-            <h3><i class="fas fa-id-card-alt"></i> License Required: ${license}</h3>
+        <div class="w3-panel w3-pale-blue">
+            <h3><i class="fas fa-id-card-alt"></i> Required License: ${license}</h3>
         </div>
-
-        <h4 class="w3-text-theme">Regulatory Checks</h4>
-        <table class="w3-table w3-bordered">
-            <tr class="${checks.vehicleGVWR ? 'w3-pale-green' : 'w3-pale-red'}">
-                <td>Vehicle GVWR (${f2v}kg)</td>
-                <td>${actualVehicle.toFixed(0)}kg</td>
-                <td>${checks.vehicleGVWR ? '✅ Pass' : '❌ Fail'}</td>
-            </tr>
-            <tr class="${checks.trailerGVWR ? 'w3-pale-green' : 'w3-pale-red'}">
-                <td>Trailer GVWR (${f2t}kg)</td>
-                <td>${actualTrailer.toFixed(0)}kg</td>
-                <td>${checks.trailerGVWR ? '✅ Pass' : '❌ Fail'}</td>
-            </tr>
-            <tr class="${checks.gtw ? 'w3-pale-green' : 'w3-pale-red'}">
-                <td>Gross Train Weight (${f3v}kg)</td>
-                <td>${combinedWeight.toFixed(0)}kg</td>
-                <td>${checks.gtw ? '✅ Pass' : '❌ Fail'}</td>
-            </tr>
-            <tr class="${checks.ratio ? 'w3-pale-green' : 'w3-pale-red'}">
-                <td>Trailer ≤ 130% Vehicle Weight</td>
-                <td>${(checks.ratio ? actualTrailer : actualVehicle * 1.3).toFixed(0)}kg</td>
-                <td>${checks.ratio ? '✅ Pass' : '❌ Fail'}</td>
-            </tr>
-        </table>
     `;
-
-        document.getElementById('resultContent').innerHTML = resultHTML;
     }
 </script>
-
 </body>
 </html>
