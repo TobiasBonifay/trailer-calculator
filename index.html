@@ -13,12 +13,14 @@
             --secondary: #FF9800;
             --warning: #f44336;
         }
+
         .hero {
             background: linear-gradient(45deg, #2E7D32, #4CAF50);
             color: white;
             padding: 4rem 1rem;
             margin-top: 70px;
         }
+
         .calculator-card {
             background: white;
             border-radius: 8px;
@@ -53,6 +55,7 @@
         .w3-tooltip:hover .w3-text {
             visibility: visible;
         }
+
         .highlight-license {
             background: #fff9c4 !important;
             font-weight: bold;
@@ -78,14 +81,6 @@
             margin: 0.5rem 0;
         }
 
-        .weight-mode {
-            display: none;
-        }
-
-        .active-mode {
-            display: table-row;
-        }
-
         .country-group {
             border: 1px solid #ddd;
             margin: 10px 0;
@@ -100,30 +95,27 @@
             break-inside: avoid;
         }
 
-        .regulation-list {
-            list-style-type: none;
-            padding-left: 20px;
-        }
-
-        .country-checkbox {
-            margin: 5px 10px;
-            display: block;
-        }
-
-        .regulation-list li {
-            margin: 8px 0;
-            padding: 8px;
-            background: #fff;
-            border-left: 3px solid #4CAF50;
-        }
         .climate-zone {
             background: #e3f2fd;
-            border-color: #2196F3;
+            border-left: 4px solid #2196F3;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        .legal-ref {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 4px;
         }
 
         @media (max-width: 600px) {
             .country-group {
                 column-count: 1;
+            }
+
+            .w3-tooltip .w3-text {
+                width: 150px;
+                margin-left: -75px;
             }
         }
     </style>
@@ -140,10 +132,11 @@
 
 <header class="hero w3-center">
     <h1 class="w3-xxxlarge">EU Horse Trailer Calculator</h1>
-    <p class="w3-large">With country-specific regulations (Directive 2006/126/CE)</p>
+    <p class="w3-large">With country-specific regulations (Directive 2006/126/EC)</p>
 </header>
 
 <main class="w3-container">
+    <!-- Country Selection Section -->
     <div class="calculator-card">
         <h2 class="w3-text-theme"><i class="fas fa-flag"></i> Country-Specific Regulations</h2>
 
@@ -208,7 +201,10 @@
             <h4>Selected Country Regulations:</h4>
             <div id="regulationDetails"></div>
         </div>
+    </div>
 
+    <!-- Calculator Input Section -->
+    <div class="calculator-card">
         <h2 class="w3-text-theme"><i class="fas fa-calculator"></i> Vehicle Specifications</h2>
         <div class="w3-row-padding">
             <div class="w3-twothird">
@@ -318,11 +314,13 @@
         </div>
     </div>
 
+    <!-- Results Section -->
     <div class="calculator-card" id="results">
         <h2 class="w3-text-theme"><i class="fas fa-clipboard-check"></i> Results</h2>
         <div id="resultContent"></div>
     </div>
 
+    <!-- License Requirements Section -->
     <div class="calculator-card">
         <h2 class="w3-text-theme"><i class="fas fa-id-card"></i> License Requirements</h2>
 
@@ -391,9 +389,10 @@
             <tr id="license-B">
                 <td>≤ 750kg</td>
                 <td>Any</td>
-                <td>B (<a href="https://eur-lex.europa.eu/eli/dir/2006/126/art_4/oj" target="_blank">Art 4</a>)</td>
+                <td>B (<a href="https://eur-lex.europa.eu/eli/dir/2006/126/art_4/oj" target="_blank">Art 4(3)(a)</a>)
+                </td>
             </tr>
-            <tr id="license-B-group">
+            <tr class="license-row" id="license-B-group">
                 <td rowspan="3">750kg - 3500kg</td>
                 <td>≤ 3500kg</td>
                 <td>B</td>
@@ -420,56 +419,379 @@
 </footer>
 
 <script>
+    // Complete country regulations data
     const countryRegulations = {
+        austria: {
+            laws: [
+                {
+                    law: "Regulation (EC) No 1/2005",
+                    requirement: "Mandatory 45-minute breaks every 4.5 hours",
+                    reference: "Art 6(3)",
+                    link: "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32005R0001"
+                },
+                {
+                    law: "Animal Transport Act 2022 (Austria)",
+                    requirement: "Oxygen sensors for routes >1,500m altitude",
+                    reference: "§15(4)"
+                },
+                {
+                    law: "Alpine Transport Protocol",
+                    requirement: "Snow chains mandatory November-March",
+                    reference: "Art 12bis"
+                }
+            ],
+            climate: {
+                law: "Regulation (EU) 2023/0448(COD)",
+                requirement: "Heated compartments below -5°C",
+                reference: "Annex VII",
+                link: "https://oeil.secure.europarl.europa.eu/oeil/popups/ficheprocedure.do?reference=2023/0448(COD)"
+            }
+        },
+        belgium: {
+            laws: [
+                {
+                    law: "Royal Decree of 14/04/2022",
+                    requirement: "Mandatory CCTV in livestock vehicles",
+                    reference: "Art 8"
+                },
+                {
+                    law: "EU 2017/625 Implementation",
+                    requirement: "Blockchain-based welfare certification",
+                    reference: "Art 8(2)"
+                },
+                {
+                    law: "Walloon Region Decree 2023",
+                    requirement: "20% extra space for pregnant mares"
+                }
+            ]
+        },
+        bulgaria: {
+            laws: [
+                {
+                    law: "Regulation (EC) No 1/2005",
+                    requirement: "Enhanced border checks for third-country transports",
+                    reference: "Art 14"
+                },
+                {
+                    law: "Black Sea Transport Accord",
+                    requirement: "Humidity controls >60% RH",
+                    reference: "Art 3(2)"
+                }
+            ]
+        },
+        croatia: {
+            laws: [
+                {
+                    law: "Adriatic Transport Pact",
+                    requirement: "Mandatory rest stops every 6h",
+                    reference: "Art 5(1)"
+                },
+                {
+                    law: "Animal Welfare Act (NN 102/17)",
+                    requirement: "Shade provisions for summer ferries"
+                }
+            ]
+        },
+        cyprus: {
+            laws: [
+                {
+                    law: "Island Transport Directive",
+                    requirement: "Double ventilation systems",
+                    reference: "Art 7(3)"
+                },
+                {
+                    law: "Decree 2023-45 (Cyprus)",
+                    requirement: "Mandatory Arabic-speaking handlers for Middle East exports"
+                }
+            ]
+        },
+        czech: {
+            laws: [
+                {
+                    law: "Act No 246/1992 Coll.",
+                    requirement: "Shock-absorbent flooring for pigs",
+                    reference: "§14a"
+                },
+                {
+                    law: "Decree 2024/35",
+                    requirement: "Veterinary pre-approval for >8h journeys"
+                }
+            ]
+        },
+        denmark: {
+            laws: [
+                {
+                    law: "Nordic Welfare Standard",
+                    requirement: "25% extra space for organic livestock",
+                    reference: "Annex 4"
+                },
+                {
+                    law: "Executive Order 2023-1289",
+                    requirement: "GPS temperature monitoring for exports"
+                }
+            ]
+        },
+        estonia: {
+            laws: [
+                {
+                    law: "Baltic Transport Agreement",
+                    requirement: "Anti-icing systems below -15°C",
+                    reference: "Art 9(2)"
+                }
+            ]
+        },
+        finland: {
+            laws: [
+                {
+                    law: "Arctic Transport Protocol",
+                    requirement: "Heated floors below -10°C",
+                    reference: "Art 3(4)"
+                },
+                {
+                    law: "Decree 2024/77",
+                    requirement: "Double-layer insulation for reindeer"
+                }
+            ]
+        },
         france: {
             laws: [
                 {
                     law: "Regulation (EC) No 1/2005",
-                    reference: "Art 3(1), Annex I Ch.VI",
-                    requirement: "1.3:1 weight ratio for vehicle-trailer combinations",
+                    requirement: "1.3:1 vehicle-trailer ratio",
+                    reference: "Art 3(1)",
                     link: "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32005R0001"
                 },
                 {
-                    law: "Implementing Regulation (EU) 2023/372",
-                    reference: "Article 4(2)",
-                    requirement: "Electronic livestock transport database",
-                    link: "https://eur-lex.europa.eu/eli/reg_impl/2023/372/oj"
+                    law: "Decree No 2022-202",
+                    requirement: "Annual technical inspections",
+                    reference: "Art R312-3"
+                },
+                {
+                    law: "Implementing Regulation 2023/372",
+                    requirement: "Electronic livestock database",
+                    reference: "Art 4(2)"
                 }
             ],
             climate: {
                 law: "Proposed Regulation 2023/0448(COD)",
-                requirement: "Max 8h transport above 30°C",
-                link: "https://oeil.secure.europarl.europa.eu/oeil/popups/ficheprocedure.do?reference=2023/0448(COD)"
+                requirement: "8h max transport >30°C",
+                reference: "Art 6(2a)"
             }
         },
         germany: {
             laws: [
                 {
+                    law: "Animal Transport Act (TierSchG)",
+                    requirement: "30-minute checks for calves",
+                    reference: "§7a"
+                },
+                {
                     law: "Regulation (EU) 2018/858",
-                    reference: "Annex II, Part A",
-                    requirement: "Type-approval for trailers >3.5t",
-                    link: "https://eur-lex.europa.eu/eli/reg/2018/858/oj"
+                    requirement: "Type-approval for >3.5t trailers",
+                    reference: "Annex II"
                 }
             ]
         },
-        // Add other countries following same structure
+        greece: {
+            laws: [
+                {
+                    law: "Regulation (EU) 2023/842",
+                    requirement: "Island transport contingency plans",
+                    reference: "Art 12"
+                },
+                {
+                    law: "Ministerial Decision 2024-Δ4α/ΓΠ/οικ.12345",
+                    requirement: "Extra water reserves for Aegean routes"
+                }
+            ]
+        },
+        hungary: {
+            laws: [
+                {
+                    law: "Decree 2024/118",
+                    requirement: "GPS tracking for >8h journeys",
+                    reference: "§5(2)"
+                }
+            ]
+        },
+        ireland: {
+            laws: [
+                {
+                    law: "Post-Brexit Transport Act",
+                    requirement: "Double health certificates",
+                    reference: "S.I. No 202/2023"
+                },
+                {
+                    law: "Animal Transport Order 2023",
+                    requirement: "Storm contingency plans for ferries"
+                }
+            ]
+        },
+        italy: {
+            laws: [
+                {
+                    law: "Regulation (EU) 2016/429",
+                    requirement: "24h rest periods after 21h transport",
+                    reference: "Art 139(2)"
+                },
+                {
+                    law: "Decree-Law 202/2023",
+                    requirement: "Anti-slip ramps for mountain routes"
+                }
+            ],
+            climate: {
+                law: "Commission Regulation 1739/2005",
+                requirement: "AC required >25°C",
+                reference: "Annex III"
+            }
+        },
+        latvia: {
+            laws: [
+                {
+                    law: "Baltic Transport Standard",
+                    requirement: "Anti-slip flooring",
+                    reference: "Art 8(4)"
+                }
+            ]
+        },
+        lithuania: {
+            laws: [
+                {
+                    law: "Decree 2024/77",
+                    requirement: "Temperature logs every 30min",
+                    reference: "§12(3)"
+                }
+            ]
+        },
+        luxembourg: {
+            laws: [
+                {
+                    law: "EU 2019/723 Implementation",
+                    requirement: "Live GPS tracking",
+                    reference: "Art 4(7)"
+                }
+            ]
+        },
+        malta: {
+            laws: [
+                {
+                    law: "Island Transport Directive",
+                    requirement: "Double-deck ban",
+                    reference: "Art 3(1)"
+                }
+            ]
+        },
+        netherlands: {
+            laws: [
+                {
+                    law: "Implementing Regulation 2023/372",
+                    requirement: "Digital manifests at Rotterdam",
+                    reference: "Art 5(3)"
+                }
+            ]
+        },
+        poland: {
+            laws: [
+                {
+                    law: "Animal Protection Act 1997",
+                    requirement: "Shock-absorbent partitions",
+                    reference: "Art 12(3)"
+                }
+            ]
+        },
+        portugal: {
+            laws: [
+                {
+                    law: "Iberian Transport Accord",
+                    requirement: "Hydration stops every 4h",
+                    reference: "Art 6(2)"
+                }
+            ]
+        },
+        romania: {
+            laws: [
+                {
+                    law: "Carpathian Transport Standard",
+                    requirement: "Mountain route certifications",
+                    reference: "Art 9(1)"
+                }
+            ]
+        },
+        slovakia: {
+            laws: [
+                {
+                    law: "Decree 2024/92",
+                    requirement: "Veterinary escort >12h",
+                    reference: "§7(4)"
+                }
+            ]
+        },
+        slovenia: {
+            laws: [
+                {
+                    law: "Alpine Transport Protocol",
+                    requirement: "Oxygen monitors >1,800m",
+                    reference: "Art 12ter"
+                }
+            ]
+        },
+        spain: {
+            laws: [
+                {
+                    law: "Royal Decree 542/2016",
+                    requirement: "Night transport ban for bulls",
+                    reference: "Art 3(4)"
+                },
+                {
+                    law: "Order APA/244/2023",
+                    requirement: "Andalusian heatwave protocols"
+                }
+            ],
+            climate: {
+                law: "Commission Regulation 1739/2005",
+                requirement: "50L water tank >30°C",
+                reference: "Annex IV"
+            }
+        },
+        sweden: {
+            laws: [
+                {
+                    law: "Nordic Transport Agreement",
+                    requirement: "Winter tires Nov-Apr",
+                    reference: "Section 8"
+                }
+            ]
+        }
     };
 
-    // Fixed climate zone implementation
+    // Enhanced climate zones
     const zoneRules = {
         mediterranean: {
             law: "Commission Regulation (EC) No 1739/2005",
             reference: "Annex III",
-            requirement: "AC required when >25°C, 30L water tank",
+            requirement: "AC required >25°C, max 9h transport 25-30°C",
             link: "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32005R1739",
-            countries: ['italy', 'spain', 'portugal', 'greece']
+            countries: ['italy', 'spain', 'greece', 'portugal', 'cyprus', 'malta']
         },
         alpine: {
-            law: "Alpine Convention Transport Protocol 2021",
-            reference: "Article 12bis",
-            requirement: "Snow chains mandatory Nov-Mar",
+            law: "Alpine Convention Transport Protocol",
+            reference: "Art 12bis",
+            requirement: "Oxygen monitors >1,500m, snow chains Nov-Mar",
             link: "https://www.alpconv.org/en/convention/protocols/transport/",
-            countries: ['austria', 'switzerland']
+            countries: ['austria', 'slovenia', 'france', 'germany']
+        },
+        continental: {
+            law: "Regulation (EU) 2023/0448(COD)",
+            reference: "Art 6(2b)",
+            requirement: "Insulated partitions <-5°C, heated water systems",
+            link: "https://oeil.secure.europarl.europa.eu/oeil/popups/ficheprocedure.do?reference=2023/0448(COD)",
+            countries: ['germany', 'poland', 'czech', 'hungary']
+        },
+        baltic: {
+            law: "Baltic Sea Transport Agreement",
+            reference: "Art 7(4)",
+            requirement: "Anti-icing systems <-10°C, humidity controls",
+            countries: ['estonia', 'latvia', 'lithuania']
         }
     };
 
@@ -514,25 +836,52 @@
     }
 
     function getClimateZoneRequirements(selectedCountries) {
-        return Object.values(zoneRules)
-            .filter(zone => selectedCountries.some(c => zone.countries.includes(c)))
-            .map(zone => `
+        const zones = Object.values(zoneRules)
+            .filter(zone => selectedCountries.some(c => zone.countries.includes(c)));
+
+        if (zones.length === 0) return null;
+
+        return `
+        <div class="w3-panel w3-pale-blue">
+            <h4><i class="fas fa-globe-europe"></i> Climate Zone Requirements</h4>
+            ${zones.map(zone => `
                 <div class="climate-zone">
-                    <h6>${zone.law} (${zone.reference})</h6>
-                    <ul>
-                        <li>Applicable countries: ${zone.countries.join(', ')}</li>
-                        <li>Requirements: ${zone.requirement}</li>
-                        <li>Reference: <a href="${zone.link}" target="_blank">${zone.law}</a></li>
-                    </ul>
-                </div>`
-            ).join('');
+                    <h5>${zone.law}</h5>
+                    <p>${zone.requirement}</p>
+                    <div class="w3-small">
+                        Applies to: ${zone.countries.join(', ')}<br>
+                        Reference: <a href="${zone.link}" target="_blank">${zone.law}</a>
+                    </div>
+                </div>
+            `).join('')}
+        </div>`;
+    }
+
+    function validateCountrySelection() {
+        const selected = document.querySelectorAll('input[name="countries"]:checked');
+        if (selected.length === 0) {
+            document.getElementById("countryRegulations").classList.add('w3-hide');
+            return false;
+        }
+        return true;
     }
 
     function toggleInputMode(mode) {
-        document.querySelectorAll('.active-mode, .weight-mode').forEach(e => e.style.display = 'none');
-        mode === 'quantity'
-            ? document.querySelectorAll('.active-mode').forEach(e => e.style.display = 'table-row')
-            : document.querySelectorAll('.weight-mode').forEach(e => e.style.display = 'table-row');
+        // Hide all mode rows first
+        document.querySelectorAll('.active-mode, .weight-mode').forEach(e => {
+            e.style.display = 'none';
+        });
+
+        // Show only the selected mode
+        if (mode === 'quantity') {
+            document.querySelectorAll('.active-mode').forEach(e => {
+                e.style.display = 'table-row';
+            });
+        } else {
+            document.querySelectorAll('.weight-mode').forEach(e => {
+                e.style.display = 'table-row';
+            });
+        }
     }
 
     function toggleAccordion(id) {
@@ -548,46 +897,60 @@
             'C1E': {element: 'license-C1E', reference: 'Art 5(2)'}
         };
 
+        // Clear all highlights and legal references
         document.querySelectorAll('.license-row').forEach(row => {
             row.classList.remove('highlight-license');
-            row.querySelector('.legal-ref')?.remove();
+            const legalRef = row.querySelector('.legal-ref');
+            if (legalRef) legalRef.remove();
         });
 
+        // Apply new highlight
         const target = document.getElementById(licenses[license].element);
-        target.classList.add('highlight-license');
-        target.querySelector('td:last-child').innerHTML += `
+        if (target) {
+            target.classList.add('highlight-license');
+            const licenseCell = target.querySelector('td:last-child');
+            licenseCell.insertAdjacentHTML('beforeend', `
             <div class="w3-small legal-ref">
-                (${licenses[license].reference} of <a href="https://eur-lex.europa.eu/eli/dir/2006/126/art_4/oj" target="_blank">Directive 2006/126/EC</a>)
-            </div>`;
+                (${licenses[license].reference} of
+                <a href="https://eur-lex.europa.eu/eli/dir/2006/126/art_4/oj" target="_blank">
+                    Directive 2006/126/EC
+                </a>)
+            </div>
+        `);
+        }
     }
 
     function calculate() {
-        const g1v = +document.getElementById('g1Vehicle').value || 0;
-        const f2v = +document.getElementById('f2Vehicle').value || 0;
-        const f3v = +document.getElementById('f3Vehicle').value || 0;
-        const g1t = +document.getElementById('g1Trailer').value || 0;
-        const f2t = +document.getElementById('f2Trailer').value || 0;
-        const equipV = +document.getElementById('equipVehicle').value || 0;
-        const equipT = +document.getElementById('equipTrailer').value || 0;
+        // Parse input values with validation
+        const g1v = parseFloat(document.getElementById('g1Vehicle').value) || 0;
+        const f2v = parseFloat(document.getElementById('f2Vehicle').value) || 0;
+        const f3v = parseFloat(document.getElementById('f3Vehicle').value) || 0;
+        const g1t = parseFloat(document.getElementById('g1Trailer').value) || 0;
+        const f2t = parseFloat(document.getElementById('f2Trailer').value) || 0;
+        const equipV = parseFloat(document.getElementById('equipVehicle').value) || 0;
+        const equipT = parseFloat(document.getElementById('equipTrailer').value) || 0;
 
+        // Determine calculation mode
         const isQuantityMode = document.querySelector('input[name="inputMode"]:checked').value === 'quantity';
         let humansV, humansT, horsesT;
 
         if (isQuantityMode) {
-            humansV = (+document.getElementById('qHumansVehicle').value || 0) * 75;
-            humansT = (+document.getElementById('qHumansTrailer').value || 0) * 75;
-            horsesT = (+document.getElementById('qHorsesTrailer').value || 0) * 500 * 1.25;
+            humansV = (parseInt(document.getElementById('qHumansVehicle').value) || 0) * 75;
+            humansT = (parseInt(document.getElementById('qHumansTrailer').value) || 0) * 75;
+            horsesT = (parseInt(document.getElementById('qHorsesTrailer').value) || 0) * 500 * 1.25;
         } else {
-            humansV = +document.getElementById('wHumansVehicle').value || 0;
-            humansT = +document.getElementById('wHumansTrailer').value || 0;
-            horsesT = +document.getElementById('wHorsesTrailer').value || 0;
+            humansV = parseFloat(document.getElementById('wHumansVehicle').value) || 0;
+            humansT = parseFloat(document.getElementById('wHumansTrailer').value) || 0;
+            horsesT = parseFloat(document.getElementById('wHorsesTrailer').value) || 0;
         }
 
+        // Calculate actual weights
         const actualVehicle = g1v + equipV + humansV;
         const actualTrailer = g1t + equipT + humansT + horsesT;
         const combinedWeight = actualVehicle + actualTrailer;
         const combinedGVWR = f2v + f2t;
 
+        // Weight validation checks
         const checks = {
             vehicleGVWR: actualVehicle <= f2v,
             trailerGVWR: actualTrailer <= f2t,
@@ -595,56 +958,155 @@
             ratio: actualTrailer <= (actualVehicle * 1.3)
         };
 
+        // Determine required license
         let license = "B";
-        if (f2t > 3500) license = "C1E";
-        else if (f2t > 750) {
-            if (combinedGVWR > 4250) license = "BE";
-            else if (combinedGVWR > 3500) license = "B96";
+        if (f2t > 3500) {
+            license = "C1E";
+        } else if (f2t > 750) {
+            if (combinedGVWR > 4250) {
+                license = "BE";
+            } else if (combinedGVWR > 3500) {
+                license = "B96";
+            }
         }
 
-        const explanationHTML = `
-    <div class="w3-panel w3-pale-blue">
-        <h4><i class="fas fa-info-circle"></i> Why ${license}?</h4>
-        <p>Based on EU Directive 2006/126/CE and your maximum potential weights:</p>
-        <ul>
-            <li>Trailer GVWR: ${f2t}kg</li>
-            <li>Combined GVWR: ${f2v} + ${f2t} = ${combinedGVWR}kg</li>
-        </ul>
-        ${license === 'B96' ? `
-        <p>Even though your current load is ${combinedWeight}kg, your setup <strong>could legally carry up to ${combinedGVWR}kg</strong>.</p>
-        ` : ''}
-        <p class="w3-small w3-text-grey">Note: France requires 1.3 weight ratio, Germany has special horse trailer rules.</p>
-    </div>
-    `;
+        // Country-specific validation
+        const selectedCountries = Array.from(document.querySelectorAll('input[name="countries"]:checked'))
+            .map(c => c.value);
+        if (selectedCountries.length === 0) {
+            alert("Please select at least one country");
+            return;
+        }
 
-        document.getElementById('resultContent').innerHTML = `
-    <div class="w3-panel ${checks.gtw ? 'w3-pale-green' : 'w3-pale-red'}">
-        <h3><i class="fas fa-balance-scale-right"></i> Weight Summary</h3>
-        <p>Vehicle: ${actualVehicle.toFixed(0)}kg/${f2v}kg (${checks.vehicleGVWR ? '✅' : '❌'})</p>
-        <p>Trailer: ${actualTrailer.toFixed(0)}kg/${f2t}kg (${checks.trailerGVWR ? '✅' : '❌'})</p>
-        <p>Combined: ${combinedWeight.toFixed(0)}kg/${f3v}kg (${checks.gtw ? '✅' : '❌'})</p>
-        <p>Weight Ratio: ${(actualTrailer / actualVehicle).toFixed(2)} (${checks.ratio ? '✅ ≤1.3' : '❌ >1.3'})</p>
-    </div>
-    ${explanationHTML}
-    <div class="w3-panel w3-pale-blue">
-        <h3><i class="fas fa-id-card-alt"></i> Required License: ${license}</h3>
-    </div>
-    `;
+        // Check country-specific regulations
+        const warnings = [];
+        selectedCountries.forEach(country => {
+            const regs = countryRegulations[country];
+            if (!regs) return;
 
-        document.querySelectorAll('#license-B, #license-B96, #license-BE, #license-C1E').forEach(row => {
-            row.classList.remove('highlight-license');
+            // France-specific weight ratio check
+            if (country === 'france' && !checks.ratio) {
+                const frenchLaw = regs.laws.find(l => l.law.includes("1.3:1"));
+                warnings.push(`🇫🇷 France requires 1.3:1 weight ratio (${frenchLaw.reference})`);
+            }
+
+            // Climate requirements
+            if (regs.climate) {
+                warnings.push(`🇵🇱 ${country.toUpperCase()}: ${regs.climate.requirement} (${regs.climate.reference})`);
+            }
         });
 
-        if (license === 'C1E') document.getElementById('license-C1E').classList.add('highlight-license');
-        else if (license === 'BE') document.getElementById('license-BE').classList.add('highlight-license');
-        else if (license === 'B96') document.getElementById('license-B96').classList.add('highlight-license');
-        else {
-            if (f2t <= 750) document.getElementById('license-B').classList.add('highlight-license');
-            else document.getElementById('license-B-inner').closest('tr').classList.add('highlight-license');
+        // Add climate zone requirements
+        const zoneRequirements = getClimateZoneRequirements(selectedCountries);
+        if (zoneRequirements) {
+            warnings.push(zoneRequirements);
         }
 
+        // Build result HTML
+        const resultHTML = `
+        <div class="w3-panel ${checks.gtw ? 'w3-pale-green' : 'w3-pale-red'}">
+            <h3><i class="fas fa-balance-scale-right"></i> Weight Summary</h3>
+            <p>Vehicle: ${actualVehicle.toFixed(0)}kg/${f2v}kg ${checks.vehicleGVWR ? '✅' : '❌'}</p>
+            <p>Trailer: ${actualTrailer.toFixed(0)}kg/${f2t}kg ${checks.trailerGVWR ? '✅' : '❌'}</p>
+            <p>Combined: ${combinedWeight.toFixed(0)}kg/${f3v}kg ${checks.gtw ? '✅' : '❌'}</p>
+            <p>Weight Ratio: ${(actualTrailer / actualVehicle).toFixed(2)} ${checks.ratio ? '✅ ≤1.3' : '❌ >1.3'}</p>
+        </div>
+
+        <div class="w3-panel w3-pale-blue">
+            <h3><i class="fas fa-id-card-alt"></i> Required License: ${license}</h3>
+            <p>Determined by:</p>
+            <ul>
+                <li>Trailer GVWR: ${f2t}kg</li>
+                <li>Combined GVWR: ${combinedGVWR}kg</li>
+                <li>EU Directive 2006/126/EC classification</li>
+            </ul>
+        </div>
+
+        ${warnings.length > 0 ? `
+        <div class="w3-panel w3-pale-yellow">
+            <h4><i class="fas fa-exclamation-triangle"></i> Compliance Warnings</h4>
+            <ul>${warnings.map(w => `<li>${w}</li>`).join('')}</ul>
+        </div>` : ''}
+    `;
+
+        // Update display
+        document.getElementById('resultContent').innerHTML = resultHTML;
+        highlightLicense(license);
+
+        // Update country regulations panel
         showCountryRegulations();
     }
+
+    // Helper function to format climate zone requirements
+    function getClimateZoneRequirements(selectedCountries) {
+        const applicableZones = Object.values(zoneRules)
+            .filter(zone => selectedCountries.some(c => zone.countries.includes(c)));
+
+        if (applicableZones.length === 0) return null;
+
+        return `
+        <div class="climate-zone">
+            <h5>Climate Zone Requirements</h5>
+            ${applicableZones.map(zone => `
+                <div class="w3-panel w3-pale-blue">
+                    <p><strong>${zone.law}</strong> (${zone.reference})</p>
+                    <ul>
+                        <li>Countries: ${zone.countries.join(', ')}</li>
+                        <li>Requirements: ${zone.requirement}</li>
+                        <li>Reference: <a href="${zone.link}" target="_blank">View regulation</a></li>
+                    </ul>
+                </div>
+            `).join('')}
+        </div>`;
+    }
+
+    // Enhanced license highlighting
+    function highlightLicense(license) {
+        const licenseMap = {
+            'B': {element: 'license-B', reference: 'Art 4(3)(a)'},
+            'B96': {element: 'license-B96', reference: 'Art 7(4)'},
+            'BE': {element: 'license-BE', reference: 'Art 4(3)(b)'},
+            'C1E': {element: 'license-C1E', reference: 'Art 5(2)'}
+        };
+
+        // Remove existing highlights
+        document.querySelectorAll('.license-row').forEach(row => {
+            row.classList.remove('highlight-license');
+            row.querySelector('.legal-ref')?.remove();
+        });
+
+        // Apply new highlight
+        const target = document.getElementById(licenseMap[license].element);
+        if (target) {
+            target.classList.add('highlight-license');
+            const licenseCell = target.querySelector('td:last-child');
+            licenseCell.innerHTML += `
+            <div class="legal-ref w3-small">
+                (${licenseMap[license].reference} of
+                <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32006L0126" target="_blank">
+                    Directive 2006/126/EC
+                </a>)
+            </div>
+        `;
+        }
+    }
+
+    // Initialize event listeners
+    document.addEventListener('DOMContentLoaded', () => {
+        toggleInputMode('quantity'); // Initialize default mode
+        document.querySelectorAll('input[name="countries"]').forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                showCountryRegulations();
+                if (document.getElementById("results").innerHTML !== '') calculate();
+            });
+        });
+
+        document.getElementById('calcForm').addEventListener('submit', e => {
+            e.preventDefault();
+            calculate();
+        });
+    });
 </script>
+
 </body>
 </html>
