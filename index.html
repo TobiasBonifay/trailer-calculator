@@ -26,14 +26,12 @@
             padding: 2rem;
             margin: 2rem 0;
         }
-
         .input-mode {
             margin: 1rem 0;
             padding: 1rem;
             background: #f5f5f5;
             border-radius: 4px;
         }
-
         .tooltip {
             cursor: help;
             border-bottom: 1px dotted var(--primary);
@@ -50,7 +48,6 @@
         .w3-tooltip {
             position: relative;
         }
-
         .w3-tooltip .w3-text {
             visibility: hidden;
             width: 200px;
@@ -68,10 +65,29 @@
         .w3-tooltip:hover .w3-text {
             visibility: visible;
         }
-
         .highlight-license {
             background: #fff9c4 !important;
             font-weight: bold;
+            animation: highlight-pulse 1.5s infinite;
+        }
+
+        @keyframes highlight-pulse {
+            0% {
+                background-color: #fff9c4;
+            }
+            50% {
+                background-color: #fff176;
+            }
+            100% {
+                background-color: #fff9c4;
+            }
+        }
+
+        .explanation-note {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 1rem;
+            margin: 1rem 0;
         }
     </style>
 </head>
@@ -93,7 +109,6 @@
 <main class="w3-container">
     <div class="calculator-card">
         <h2 class="w3-text-theme"><i class="fas fa-calculator"></i> Vehicle Specifications</h2>
-
         <div class="w3-row-padding">
             <div class="w3-twothird">
                 <form id="calcForm">
@@ -212,7 +227,7 @@
         <table class="w3-table w3-bordered w3-striped">
             <tr class="w3-theme">
                 <th>Trailer GVWR</th>
-                <th>Combined GVWR</th>
+                <th>Combined GVWR<br><small>(Vehicle GVWR + Trailer GVWR)</small></th>
                 <th>Required License</th>
             </tr>
             <tr id="license-B">
@@ -279,6 +294,7 @@
         const actualVehicle = g1v + equipV + humansV;
         const actualTrailer = g1t + equipT + humansT + horsesT;
         const combinedWeight = actualVehicle + actualTrailer;
+        const combinedGVWR = f2v + f2t;
 
         // Regulatory checks
         const checks = {
@@ -292,22 +308,37 @@
         let license = "B";
         if (f2t > 3500) license = "C1E";
         else if (f2t > 750) {
-            const totalGVWR = f2v + f2t;
-            if (totalGVWR > 4250) license = "BE";
-            else if (totalGVWR > 3500) license = "B96";
+            if (combinedGVWR > 4250) license = "BE";
+            else if (combinedGVWR > 3500) license = "B96";
         }
 
+        const explanationHTML = `
+    <div class="explanation-note">
+        <h4><i class="fas fa-info-circle"></i> Why ${license}?</h4>
+        <p>License requirements use <strong>maximum potential weights</strong> (GVWR):</p>
+        <ul>
+            <li>Trailer GVWR: ${f2t}kg</li>
+            <li>Combined GVWR: ${f2v} + ${f2t} = ${combinedGVWR}kg</li>
+        </ul>
+        ${license === 'B96' ? `
+        <p>Even though your current load is ${combinedWeight}kg, your setup <strong>could legally carry up to ${combinedGVWR}kg</strong>,
+        which requires B96 certification.</p>
+        ` : ''}
+    </div>
+    `;
+
         document.getElementById('resultContent').innerHTML = `
-        <div class="w3-panel ${checks.gtw ? 'w3-pale-green' : 'w3-pale-red'}">
-            <h3><i class="fas fa-balance-scale-right"></i> Weight Summary</h3>
-            <p>Vehicle: ${actualVehicle.toFixed(0)}kg/${f2v}kg (${checks.vehicleGVWR ? '✅' : '❌'})</p>
-            <p>Trailer: ${actualTrailer.toFixed(0)}kg/${f2t}kg (${checks.trailerGVWR ? '✅' : '❌'})</p>
-            <p>Combined: ${combinedWeight.toFixed(0)}kg/${f3v}kg (${checks.gtw ? '✅' : '❌'})</p>
-            <p>Weight Ratio: ${(actualTrailer / actualVehicle).toFixed(2)} (${checks.ratio ? '✅ ≤1.3' : '❌ >1.3'})</p>
-        </div>
-        <div class="w3-panel w3-pale-blue">
-            <h3><i class="fas fa-id-card-alt"></i> Required License: ${license}</h3>
-        </div>
+    <div class="w3-panel ${checks.gtw ? 'w3-pale-green' : 'w3-pale-red'}">
+        <h3><i class="fas fa-balance-scale-right"></i> Weight Summary</h3>
+        <p>Vehicle: ${actualVehicle.toFixed(0)}kg/${f2v}kg (${checks.vehicleGVWR ? '✅' : '❌'})</p>
+        <p>Trailer: ${actualTrailer.toFixed(0)}kg/${f2t}kg (${checks.trailerGVWR ? '✅' : '❌'})</p>
+        <p>Combined: ${combinedWeight.toFixed(0)}kg/${f3v}kg (${checks.gtw ? '✅' : '❌'})</p>
+        <p>Weight Ratio: ${(actualTrailer / actualVehicle).toFixed(2)} (${checks.ratio ? '✅ ≤1.3' : '❌ >1.3'})</p>
+    </div>
+    ${explanationHTML}
+    <div class="w3-panel w3-pale-blue">
+        <h3><i class="fas fa-id-card-alt"></i> Required License: ${license}</h3>
+    </div>
     `;
 
         // Highlight license row
