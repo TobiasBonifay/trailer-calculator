@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Towing Capacity Calculator</title>
+    <meta content="Calculate towing capacity, GVWR, GTW, and required driving license" name="description">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link href="https://www.w3schools.com/w3css/4/w3.css" rel="stylesheet">
+    <link href="https://www.w3schools.com/lib/w3-theme-black.css" rel="stylesheet">
+    <style>
+        .calculator-section {
+            padding: 32px 0;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .important {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="w3-theme-light">
+
+<!-- Navbar -->
+<div class="w3-top">
+    <div class="w3-bar w3-theme w3-large">
+        <span class="w3-bar-item">Towing Calculator</span>
+    </div>
+</div>
+
+<div class="w3-container" style="margin-top:70px">
+    <!-- Disclaimer -->
+    <div class="w3-panel w3-yellow">
+        <h3>Important Notice</h3>
+        <p>This tool is for informational purposes only. Always verify official regulations and your vehicle's
+            documentation before towing.</p>
+    </div>
+
+    <!-- Calculator Form -->
+    <div class="calculator-section">
+        <h2 class="w3-text-indigo">Vehicle Information</h2>
+
+        <div class="w3-row-padding">
+            <div class="w3-twothird">
+                <form id="calcForm">
+                    <h4 class="w3-text-indigo">Vehicle Specifications (kg)</h4>
+                    <table class="w3-table w3-bordered">
+                        <tr>
+                            <th></th>
+                            <th>Towing Vehicle</th>
+                            <th>Trailer</th>
+                        </tr>
+                        <tr>
+                            <td>Unladen Weight (G1)</td>
+                            <td><input class="w3-input" id="g1Vehicle" type="number"></td>
+                            <td><input class="w3-input" id="g1Trailer" type="number"></td>
+                        </tr>
+                        <tr>
+                            <td>GVWR (F2)</td>
+                            <td><input class="w3-input" id="f2Vehicle" type="number"></td>
+                            <td><input class="w3-input" id="f2Trailer" type="number"></td>
+                        </tr>
+                    </table>
+
+                    <h4 class="w3-text-indigo" style="margin-top:32px">Loading Plan (kg)</h4>
+                    <table class="w3-table w3-bordered">
+                        <tr>
+                            <th></th>
+                            <th>Towing Vehicle</th>
+                            <th>Trailer</th>
+                        </tr>
+                        <tr>
+                            <td>Equipment Weight</td>
+                            <td><input class="w3-input" id="equipVehicle" type="number"></td>
+                            <td><input class="w3-input" id="equipTrailer" type="number"></td>
+                        </tr>
+                        <tr>
+                            <td>Passengers/Live Weight</td>
+                            <td><input class="w3-input" id="passengersVehicle" type="number"></td>
+                            <td><input class="w3-input" id="liveTrailer" type="number"></td>
+                        </tr>
+                    </table>
+
+                    <button class="w3-button w3-indigo w3-margin-top" onclick="calculate()"
+                            type="button">
+                        Calculate
+                    </button>
+                </form>
+            </div>
+
+            <div class="w3-third">
+                <div class="w3-panel w3-border w3-padding">
+                    <h4>Vehicle Documents Guide</h4>
+                    <ul class="w3-ul">
+                        <li>F2 = GVWR (Gross Vehicle Weight Rating)</li>
+                        <li>G1 = Unladen Weight</li>
+                        <li>GTW = Gross Train Weight (if available)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results -->
+    <div class="calculator-section">
+        <h2 class="w3-text-indigo">Results</h2>
+        <div class="w3-panel" id="results"></div>
+    </div>
+
+    <!-- License Requirements -->
+    <div class="calculator-section">
+        <h2 class="w3-text-indigo">License Requirements</h2>
+        <table class="w3-table w3-bordered">
+            <tr class="w3-indigo">
+                <th>Trailer GVWR</th>
+                <th>Combined GVWR</th>
+                <th>Required License</th>
+            </tr>
+            <tr>
+                <td>≤ 750kg</td>
+                <td>Any</td>
+                <td>Standard License (B)</td>
+            </tr>
+            <tr>
+                <td rowspan="3">750kg - 3500kg</td>
+                <td>≤ 3500kg</td>
+                <td>License B</td>
+            </tr>
+            <tr>
+                <td>3500kg - 4250kg</td>
+                <td>B96 Certification</td>
+            </tr>
+            <tr>
+                <td>> 4250kg</td>
+                <td>BE License</td>
+            </tr>
+            <tr>
+                <td>> 3500kg</td>
+                <td>Any</td>
+                <td class="important">Requires C1E License</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<footer class="w3-container w3-theme-d2 w3-padding-32">
+    <div class="w3-panel">
+        <p>This tool is based on European towing regulations. Always consult official sources for legal
+            requirements.</p>
+        <p>Template by <a href="https://www.w3schools.com" target="_blank">W3.CSS</a></p>
+    </div>
+</footer>
+
+<script>
+    function calculate() {
+        // Get input values
+        const vehicleGVWR = parseInt(document.getElementById('f2Vehicle').value) || 0;
+        const trailerGVWR = parseInt(document.getElementById('f2Trailer').value) || 0;
+
+        // Perform calculations
+        const combinedGVWR = vehicleGVWR + trailerGVWR;
+        let license = "Standard License (B)";
+
+        if (trailerGVWR > 3500) {
+            license = "Requires C1E License";
+        } else if (trailerGVWR > 750) {
+            if (combinedGVWR > 4250) license = "BE License";
+            else if (combinedGVWR > 3500) license = "B96 Certification";
+        }
+
+        // Display results
+        document.getElementById('results').innerHTML = `
+        <h4>Required License: <span class="important">${license}</span></h4>
+        <p>Combined GVWR: ${combinedGVWR}kg</p>
+        <div class="w3-panel w3-pale-green">
+            Always verify:
+            <ul>
+                <li>Actual weights at weigh station</li>
+                <li>Vehicle manufacturer specifications</li>
+                <li>Local regulations</li>
+            </ul>
+        </div>
+    `;
+    }
+</script>
+
+</body>
+</html>
