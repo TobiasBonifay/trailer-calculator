@@ -3,118 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <title>Towing Capacity Calculator</title>
-    <meta content="Calculate towing capacity, GVWR, GTW, and required driving license" name="description">
+    <meta content="Calculate towing capacity and required driving license" name="description">
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <link href="https://www.w3schools.com/w3css/4/w3.css" rel="stylesheet">
-    <link href="https://www.w3schools.com/lib/w3-theme-black.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        .calculator-section {
-            padding: 32px 0;
-            border-bottom: 2px solid #ddd;
+        :root {
+            --primary-color: #3f51b5;
+            --secondary-color: #ff4081;
         }
 
-        .important {
-            color: #d32f2f;
-            font-weight: bold;
+        body {
+            background: #f5f5f5;
+        }
+
+        .hero {
+            background: linear-gradient(45deg, var(--primary-color), #283593);
+            color: white;
+            padding: 4rem 1rem;
+            margin-top: 70px;
+        }
+
+        .calculator-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .input-group {
+            margin: 1.5rem 0;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #616161;
+            font-weight: 500;
+        }
+
+        .w3-input {
+            border-radius: 5px;
+            padding: 12px !important;
+            transition: border-color 0.3s ease;
+        }
+
+        .w3-input:focus {
+            border-color: var(--primary-color) !important;
+        }
+
+        .result-card {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .license-table {
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .license-table th {
+            background: var(--primary-color) !important;
+            color: white !important;
+        }
+
+        .highlight {
+            color: var(--secondary-color);
+            font-weight: 600;
         }
     </style>
 </head>
-<body class="w3-theme-light">
+<body>
 
 <!-- Navbar -->
 <div class="w3-top">
-    <div class="w3-bar w3-theme w3-large">
-        <span class="w3-bar-item">Towing Calculator</span>
+    <div class="w3-bar w3-card" style="background: var(--primary-color)">
+        <a class="w3-bar-item w3-button w3-large" href="#"><i class="fas fa-trailer"></i> Towing Calculator</a>
     </div>
 </div>
 
-<div class="w3-container" style="margin-top:70px">
-    <!-- Disclaimer -->
-    <div class="w3-panel w3-yellow">
-        <h3>Important Notice</h3>
-        <p>This tool is for informational purposes only. Always verify official regulations and your vehicle's
-            documentation before towing.</p>
-    </div>
+<!-- Hero Section -->
+<header class="hero w3-center">
+    <h1 class="w3-xxxlarge">Towing Capacity Calculator</h1>
+    <p class="w3-large">Ensure safe and legal towing operations</p>
+</header>
 
-    <!-- Calculator Form -->
-    <div class="calculator-section">
-        <h2 class="w3-text-indigo">Vehicle Information</h2>
+<main class="w3-container">
+    <!-- Calculator Section -->
+    <div class="calculator-card">
+        <h2 class="w3-text-indigo"><i class="fas fa-calculator"></i> Vehicle Specifications</h2>
 
         <div class="w3-row-padding">
             <div class="w3-twothird">
                 <form id="calcForm">
-                    <h4 class="w3-text-indigo">Vehicle Specifications (kg)</h4>
-                    <table class="w3-table w3-bordered">
-                        <tr>
-                            <th></th>
-                            <th>Towing Vehicle</th>
-                            <th>Trailer</th>
-                        </tr>
-                        <tr>
-                            <td>Unladen Weight (G1)</td>
-                            <td><input class="w3-input" id="g1Vehicle" type="number"></td>
-                            <td><input class="w3-input" id="g1Trailer" type="number"></td>
-                        </tr>
-                        <tr>
-                            <td>GVWR (F2)</td>
-                            <td><input class="w3-input" id="f2Vehicle" type="number"></td>
-                            <td><input class="w3-input" id="f2Trailer" type="number"></td>
-                        </tr>
-                    </table>
+                    <div class="input-group">
+                        <label><i class="fas fa-car"></i> Towing Vehicle (kg)</label>
+                        <div class="w3-row">
+                            <div class="w3-half w3-padding-small">
+                                <input class="w3-input w3-border" id="f2Vehicle"
+                                       placeholder="GVWR (F2)" type="number">
+                            </div>
+                            <div class="w3-half w3-padding-small">
+                                <input class="w3-input w3-border" id="g1Vehicle"
+                                       placeholder="Unladen Weight (G1)" type="number">
+                            </div>
+                        </div>
+                    </div>
 
-                    <h4 class="w3-text-indigo" style="margin-top:32px">Loading Plan (kg)</h4>
-                    <table class="w3-table w3-bordered">
-                        <tr>
-                            <th></th>
-                            <th>Towing Vehicle</th>
-                            <th>Trailer</th>
-                        </tr>
-                        <tr>
-                            <td>Equipment Weight</td>
-                            <td><input class="w3-input" id="equipVehicle" type="number"></td>
-                            <td><input class="w3-input" id="equipTrailer" type="number"></td>
-                        </tr>
-                        <tr>
-                            <td>Passengers/Live Weight</td>
-                            <td><input class="w3-input" id="passengersVehicle" type="number"></td>
-                            <td><input class="w3-input" id="liveTrailer" type="number"></td>
-                        </tr>
-                    </table>
+                    <div class="input-group">
+                        <label><i class="fas fa-trailer"></i> Trailer (kg)</label>
+                        <div class="w3-row">
+                            <div class="w3-half w3-padding-small">
+                                <input class="w3-input w3-border" id="f2Trailer"
+                                       placeholder="GVWR (F2)" type="number">
+                            </div>
+                            <div class="w3-half w3-padding-small">
+                                <input class="w3-input w3-border" id="g1Trailer"
+                                       placeholder="Unladen Weight (G1)" type="number">
+                            </div>
+                        </div>
+                    </div>
 
-                    <button class="w3-button w3-indigo w3-margin-top" onclick="calculate()"
+                    <button class="w3-button w3-block w3-padding-large" onclick="calculate()"
+                            style="background: var(--secondary-color); color: white"
                             type="button">
-                        Calculate
+                        <i class="fas fa-play-circle"></i> Calculate Requirements
                     </button>
                 </form>
             </div>
 
             <div class="w3-third">
-                <div class="w3-panel w3-border w3-padding">
-                    <h4>Vehicle Documents Guide</h4>
+                <div class="w3-panel w3-pale-blue w3-leftbar w3-border-blue">
+                    <h4><i class="fas fa-info-circle"></i> Quick Guide</h4>
                     <ul class="w3-ul">
-                        <li>F2 = GVWR (Gross Vehicle Weight Rating)</li>
-                        <li>G1 = Unladen Weight</li>
-                        <li>GTW = Gross Train Weight (if available)</li>
+                        <li>GVWR = Gross Vehicle Weight Rating</li>
+                        <li>Found in vehicle documents (F2 field)</li>
+                        <li>Empty weight = Unladen Weight (G1)</li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Results -->
-    <div class="calculator-section">
-        <h2 class="w3-text-indigo">Results</h2>
-        <div class="w3-panel" id="results"></div>
+    <!-- Results Section -->
+    <div class="calculator-card" id="results">
+        <h2 class="w3-text-indigo"><i class="fas fa-clipboard-check"></i> Results</h2>
+        <div class="result-card">
+            <h3 class="highlight">Required License: <span id="licenseResult">-</span></h3>
+            <p>Combined GVWR: <span id="combinedGVWR">0</span> kg</p>
+            <p class="w3-small w3-text-grey">Always verify with official sources before towing</p>
+        </div>
     </div>
 
     <!-- License Requirements -->
-    <div class="calculator-section">
-        <h2 class="w3-text-indigo">License Requirements</h2>
-        <table class="w3-table w3-bordered">
-            <tr class="w3-indigo">
+    <div class="calculator-card">
+        <h2 class="w3-text-indigo"><i class="fas fa-id-card"></i> License Requirements</h2>
+        <table class="w3-table license-table w3-hoverable">
+            <tr>
                 <th>Trailer GVWR</th>
                 <th>Combined GVWR</th>
-                <th>Required License</th>
+                <th>License Type</th>
             </tr>
             <tr>
                 <td>≤ 750kg</td>
@@ -134,53 +187,47 @@
                 <td>> 4250kg</td>
                 <td>BE License</td>
             </tr>
-            <tr>
+            <tr class="w3-pale-red">
                 <td>> 3500kg</td>
                 <td>Any</td>
-                <td class="important">Requires C1E License</td>
+                <td class="highlight">C1E License Required</td>
             </tr>
         </table>
     </div>
-</div>
+</main>
 
-<footer class="w3-container w3-theme-d2 w3-padding-32">
-    <div class="w3-panel">
-        <p>This tool is based on European towing regulations. Always consult official sources for legal
-            requirements.</p>
-        <p>Template by <a href="https://www.w3schools.com" target="_blank">W3.CSS</a></p>
-    </div>
+<footer class="w3-container w3-center w3-padding-32 w3-text-grey">
+    <p>
+        <a class="w3-button w3-circle w3-indigo" href="#"><i class="fab fa-github"></i></a>
+        <a class="w3-button w3-circle w3-blue" href="#"><i class="fab fa-twitter"></i></a>
+    </p>
+    <p>© 2023 Towing Calculator | Based on EU regulations</p>
 </footer>
 
 <script>
     function calculate() {
-        // Get input values
+        // Get values
         const vehicleGVWR = parseInt(document.getElementById('f2Vehicle').value) || 0;
         const trailerGVWR = parseInt(document.getElementById('f2Trailer').value) || 0;
+        const combined = vehicleGVWR + trailerGVWR;
 
-        // Perform calculations
-        const combinedGVWR = vehicleGVWR + trailerGVWR;
+        // Determine license
         let license = "Standard License (B)";
-
         if (trailerGVWR > 3500) {
-            license = "Requires C1E License";
+            license = "C1E License Required";
         } else if (trailerGVWR > 750) {
-            if (combinedGVWR > 4250) license = "BE License";
-            else if (combinedGVWR > 3500) license = "B96 Certification";
+            if (combined > 4250) license = "BE License";
+            else if (combined > 3500) license = "B96 Certification";
         }
 
-        // Display results
-        document.getElementById('results').innerHTML = `
-        <h4>Required License: <span class="important">${license}</span></h4>
-        <p>Combined GVWR: ${combinedGVWR}kg</p>
-        <div class="w3-panel w3-pale-green">
-            Always verify:
-            <ul>
-                <li>Actual weights at weigh station</li>
-                <li>Vehicle manufacturer specifications</li>
-                <li>Local regulations</li>
-            </ul>
-        </div>
-    `;
+        // Update UI
+        document.getElementById('licenseResult').textContent = license;
+        document.getElementById('combinedGVWR').textContent = combined;
+
+        // Add visual feedback
+        document.querySelectorAll('input').forEach(input => {
+            input.style.borderColor = input.value ? '' : '#ff4444';
+        });
     }
 </script>
 
