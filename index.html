@@ -90,12 +90,14 @@
             border: 1px solid #ddd;
             margin: 10px 0;
             padding: 10px;
+            column-count: 2;
         }
 
         .regulation-category {
             margin: 15px 0;
             padding: 10px;
             background: #f8f9fa;
+            break-inside: avoid;
         }
 
         .regulation-list {
@@ -105,12 +107,19 @@
 
         .country-checkbox {
             margin: 5px 10px;
+            display: block;
         }
 
         .climate-zone {
             border-left: 4px solid #4CAF50;
             padding: 5px 10px;
             margin: 5px 0;
+        }
+
+        @media (max-width: 600px) {
+            .country-group {
+                column-count: 1;
+            }
         }
     </style>
 </head>
@@ -141,6 +150,9 @@
                 <label class="country-checkbox"><input name="countries" type="checkbox" value="germany"> Germany</label>
                 <label class="country-checkbox"><input name="countries" type="checkbox" value="netherlands"> Netherlands</label>
                 <label class="country-checkbox"><input name="countries" type="checkbox" value="belgium"> Belgium</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="luxembourg">
+                    Luxembourg</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="ireland"> Ireland</label>
             </div>
 
             <div class="country-group">
@@ -149,18 +161,41 @@
                 <label class="country-checkbox"><input name="countries" type="checkbox" value="spain"> Spain</label>
                 <label class="country-checkbox"><input name="countries" type="checkbox" value="portugal">
                     Portugal</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="greece"> Greece</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="cyprus"> Cyprus</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="malta"> Malta</label>
             </div>
 
             <div class="country-group">
-                <h5>Alpine Region</h5>
-                <label class="country-checkbox"><input name="countries" type="checkbox" value="switzerland"> Switzerland</label>
+                <h5>Central Europe</h5>
                 <label class="country-checkbox"><input name="countries" type="checkbox" value="austria"> Austria</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="switzerland"> Switzerland</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="czech"> Czech
+                    Republic</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="hungary"> Hungary</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="poland"> Poland</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="slovakia">
+                    Slovakia</label>
             </div>
 
             <div class="country-group">
                 <h5>Nordic Countries</h5>
                 <label class="country-checkbox"><input name="countries" type="checkbox" value="denmark"> Denmark</label>
                 <label class="country-checkbox"><input name="countries" type="checkbox" value="sweden"> Sweden</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="finland"> Finland</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="norway"> Norway</label>
+            </div>
+
+            <div class="country-group">
+                <h5>Eastern Europe</h5>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="estonia"> Estonia</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="latvia"> Latvia</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="lithuania">
+                    Lithuania</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="romania"> Romania</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="bulgaria">
+                    Bulgaria</label>
+                <label class="country-checkbox"><input name="countries" type="checkbox" value="croatia"> Croatia</label>
             </div>
         </div>
 
@@ -369,7 +404,7 @@
             temperature: "No explicit limit (common sense rule applies)",
             inspection: "6 months (commercial), 2 years (private)",
             equipment: "Breast bars, secured shackles",
-            weight: "1.3 weight ratio rule",
+            weight: "1.3 weight ratio rule (Art R312-3)",
             documents: "CAPTAV required for commercial >65km",
             training: "CAPTAV certification required (commercial)",
             restrictions: "No specific restrictions",
@@ -411,17 +446,29 @@
             restrictions: "Night transport allowed",
             surveillance: "Recommended"
         },
-        switzerland: {
-            speed: "80 km/h maximum",
+        luxembourg: {
+            speed: "90 km/h (highways), 75 km/h (roads)",
             breaks: "30min every 4 hours",
-            temperature: ">30°C prohibited",
-            inspection: "Annual inspection",
-            equipment: "Dual-circuit brakes, certified insulation",
-            weight: "Strict per-axle weight rules",
-            documents: "Cantonal authorization",
-            training: "Mandatory transport certification",
-            restrictions: "No night/Sunday transport",
-            surveillance: "Recommended"
+            temperature: "Max 32°C summer monitoring",
+            inspection: "Biennial technical control",
+            equipment: "Standard EU requirements",
+            weight: "1.2 weight ratio recommended",
+            documents: "Luxembourgish transport permit",
+            training: "Basic safety certification",
+            restrictions: "None",
+            surveillance: "Optional"
+        },
+        ireland: {
+            speed: "80 km/h maximum",
+            breaks: "45min every 4.5h",
+            temperature: "Continuous temperature monitoring",
+            inspection: "Annual NCT",
+            equipment: "Anti-slip flooring mandatory",
+            weight: "Strict 1:1 weight ratio",
+            documents: "Animal transport certificate",
+            training: "IATP certification required",
+            restrictions: "Ferry transport regulations apply",
+            surveillance: "GPS recommended"
         },
         italy: {
             speed: "70 km/h (roads), 80 km/h (highways)",
@@ -497,36 +544,6 @@
         }
     };
 
-    // Climate zone requirements (separate object)
-    const climateZones = {
-        mediterranean: {
-            countries: ['italy', 'spain', 'portugal'],
-            requirements: [
-                "Sun protection equipment",
-                "Air conditioning system",
-                "30L minimum water tank",
-                "Heat-resistant flooring"
-            ]
-        },
-        alpine: {
-            countries: ['switzerland', 'austria'],
-            requirements: [
-                "Snow chains (winter)",
-                "Mountain-grade brakes",
-                "Special lighting equipment",
-                "Altitude compensation system"
-            ]
-        },
-        nordic: {
-            countries: ['denmark', 'sweden'],
-            requirements: [
-                "Certified thermal insulation",
-                "Heating system (-20°C capability)",
-                "Winter tires (November-April)",
-                "Enhanced lighting system"
-            ]
-        }
-    };
 
     function showCountryRegulations() {
         const selected = Array.from(document.querySelectorAll('input[name="countries"]:checked'))
