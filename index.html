@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Horse Trailer Calculator</title>
-    <meta content="Professional horse trailer towing calculator with dual input modes" name="description">
+    <title>EU Horse Trailer Calculator</title>
+    <meta content="Professional horse trailer towing calculator with EU regulations" name="description">
     <meta content="width=device-width, initial-scale=1" name="viewport">
     <link href="https://www.w3schools.com/w3css/4/w3.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -32,18 +32,6 @@
             background: #f5f5f5;
             border-radius: 4px;
         }
-        .tooltip {
-            cursor: help;
-            border-bottom: 1px dotted var(--primary);
-        }
-
-        .weight-mode {
-            display: none;
-        }
-
-        .active-mode {
-            display: table-row;
-        }
 
         .w3-tooltip {
             position: relative;
@@ -68,26 +56,34 @@
         .highlight-license {
             background: #fff9c4 !important;
             font-weight: bold;
-            animation: highlight-pulse 1.5s infinite;
         }
 
-        @keyframes highlight-pulse {
-            0% {
-                background-color: #fff9c4;
-            }
-            50% {
-                background-color: #fff176;
-            }
-            100% {
-                background-color: #fff9c4;
-            }
-        }
-
-        .explanation-note {
-            background: #e3f2fd;
+        .country-note {
             border-left: 4px solid #2196F3;
+            margin: 1rem 0;
+            padding: 0.5rem 1rem;
+        }
+
+        .eu-directive {
+            background: #e8f5e9;
+            border: 1px solid #4CAF50;
             padding: 1rem;
             margin: 1rem 0;
+        }
+
+        .accordion {
+            cursor: pointer;
+            padding: 1rem;
+            background: #f5f5f5;
+            margin: 0.5rem 0;
+        }
+
+        .weight-mode {
+            display: none;
+        }
+
+        .active-mode {
+            display: table-row;
         }
     </style>
 </head>
@@ -96,14 +92,14 @@
 <div class="w3-top">
     <div class="w3-bar w3-card" style="background: var(--primary)">
         <a class="w3-bar-item w3-button w3-large" href="#">
-            <i class="fas fa-horse"></i> Horse Trailer Calculator
+            <i class="fas fa-horse"></i> EU Horse Trailer Calculator
         </a>
     </div>
 </div>
 
 <header class="hero w3-center">
-    <h1 class="w3-xxxlarge">Horse Trailer Safety Calculator</h1>
-    <p class="w3-large">Dual input mode: Quantity or Exact Weights</p>
+    <h1 class="w3-xxxlarge">EU Horse Trailer Calculator</h1>
+    <p class="w3-large">With country-specific regulations (Directive 2006/126/CE)</p>
 </header>
 
 <main class="w3-container">
@@ -224,10 +220,49 @@
 
     <div class="calculator-card">
         <h2 class="w3-text-theme"><i class="fas fa-id-card"></i> License Requirements</h2>
+
+        <div class="eu-directive">
+            <h4><i class="fas fa-balance-scale"></i> EU Harmonization (Directive 2006/126/CE)</h4>
+            <p>Categories B, B96, BE, and C1E are standardized across EU member states. National regulations may add
+                additional requirements.</p>
+        </div>
+
+        <div class="accordion" onclick="toggleAccordion('countryRules')">
+            <i class="fas fa-chevron-down"></i> Country-Specific Regulations
+        </div>
+        <div class="w3-hide" id="countryRules">
+            <div class="country-note">
+                <h4><i class="fas fa-flag"></i> France</h4>
+                <ul>
+                    <li>1.3 weight ratio rule (Article R312-3)</li>
+                    <li>Strict PTAC/PTRA controls</li>
+                    <li>Technical inspection required</li>
+                </ul>
+            </div>
+
+            <div class="country-note">
+                <h4><i class="fas fa-flag"></i> Germany</h4>
+                <ul>
+                    <li>No 1.3 ratio requirement</li>
+                    <li>Special rules for Pferdeanhänger (horse trailers)</li>
+                    <li>Mandatory breakaway systems</li>
+                </ul>
+            </div>
+
+            <div class="country-note">
+                <h4><i class="fas fa-flag"></i> Belgium</h4>
+                <ul>
+                    <li>Flexible weight ratios</li>
+                    <li>Animal transport exceptions</li>
+                    <li>Required safety certifications</li>
+                </ul>
+            </div>
+        </div>
+
         <table class="w3-table w3-bordered w3-striped">
             <tr class="w3-theme">
                 <th>Trailer GVWR</th>
-                <th>Combined GVWR<br><small>(Vehicle GVWR + Trailer GVWR)</small></th>
+                <th>Combined GVWR</th>
                 <th>Required License</th>
             </tr>
             <tr id="license-B">
@@ -258,7 +293,7 @@
 </main>
 
 <footer class="w3-container w3-theme-d3 w3-center w3-padding-32">
-    <p class="w3-small">Important: Verify with official specifications and regulations</p>
+    <p class="w3-small">Important: Always verify with local regulations</p>
 </footer>
 
 <script>
@@ -267,6 +302,11 @@
         mode === 'quantity'
             ? document.querySelectorAll('.active-mode').forEach(e => e.style.display = 'table-row')
             : document.querySelectorAll('.weight-mode').forEach(e => e.style.display = 'table-row');
+    }
+
+    function toggleAccordion(id) {
+        const element = document.getElementById(id);
+        element.classList.toggle('w3-hide');
     }
 
     function calculate() {
@@ -296,7 +336,6 @@
         const combinedWeight = actualVehicle + actualTrailer;
         const combinedGVWR = f2v + f2t;
 
-        // Regulatory checks
         const checks = {
             vehicleGVWR: actualVehicle <= f2v,
             trailerGVWR: actualTrailer <= f2t,
@@ -304,7 +343,6 @@
             ratio: actualTrailer <= (actualVehicle * 1.3)
         };
 
-        // License determination
         let license = "B";
         if (f2t > 3500) license = "C1E";
         else if (f2t > 750) {
@@ -313,17 +351,17 @@
         }
 
         const explanationHTML = `
-    <div class="explanation-note">
+    <div class="w3-panel w3-pale-blue">
         <h4><i class="fas fa-info-circle"></i> Why ${license}?</h4>
-        <p>License requirements use <strong>maximum potential weights</strong> (GVWR):</p>
+        <p>Based on EU Directive 2006/126/CE and your maximum potential weights:</p>
         <ul>
             <li>Trailer GVWR: ${f2t}kg</li>
             <li>Combined GVWR: ${f2v} + ${f2t} = ${combinedGVWR}kg</li>
         </ul>
         ${license === 'B96' ? `
-        <p>Even though your current load is ${combinedWeight}kg, your setup <strong>could legally carry up to ${combinedGVWR}kg</strong>,
-        which requires B96 certification.</p>
+        <p>Even though your current load is ${combinedWeight}kg, your setup <strong>could legally carry up to ${combinedGVWR}kg</strong>.</p>
         ` : ''}
+        <p class="w3-small w3-text-grey">Note: France requires 1.3 weight ratio, Germany has special horse trailer rules.</p>
     </div>
     `;
 
@@ -341,7 +379,6 @@
     </div>
     `;
 
-        // Highlight license row
         document.querySelectorAll('#license-B, #license-B96, #license-BE, #license-C1E').forEach(row => {
             row.classList.remove('highlight-license');
         });
